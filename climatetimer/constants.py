@@ -1,0 +1,16 @@
+# climatetimer/constants.py
+from datetime import datetime, timezone
+
+# Available reference timestamps
+REFERENCES = {
+    "paris": datetime(2016, 4, 22, 0, 0, 0, tzinfo=timezone.utc),
+    "kyoto": datetime(2005, 2, 16, 0, 0, 0, tzinfo=timezone.utc),
+}
+
+# Fixed duration constants in seconds
+SECOND_DURATION = 1
+MINUTE_DURATION = 60
+QUARTER_DURATION = 15 * 60  # 15-minute block
+HOUR_DURATION = 3600
+DAY_DURATION = 24 * 3600
+WEEK_DURATION = 7 * 24 * 3600

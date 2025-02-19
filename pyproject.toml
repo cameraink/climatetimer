@@ -1,0 +1,50 @@
+# [build-system]
+# requires = ["hatchling"]
+# build-backend = "hatchling.build"
+
+[project]
+name = "climatetimer"
+version = "0.1.0"
+description = "Compute time block IDs since major climate agreements."
+readme = "README.md"
+authors = [
+  { name = "Guillaume Dion", email = "your.email@example.com" }
+]
+license = "MIT"
+keywords = ["Climate", "Timer", "Paris Agreement", "Kyoto Agreement", "Time Blocks"]
+
+classifiers = [
+  # How mature is this project? Common values are
+  #   3 - Alpha
+  #   4 - Beta
+  #   5 - Production/Stable
+  "Development Status :: 4 - Beta",
+
+  # Indicate who your project is intended for
+  "Intended Audience :: Developers",
+
+  # Specify the Python versions you support here.
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+
+[project.urls]
+Homepage = "https://github.com/cameraink/climatetimer"
+Repository = "https://github.com/cameraink/climatetimer"
+
+
+requires-python = ">=3.10"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9.6",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+select = ["E", "F", "W", "C90"]

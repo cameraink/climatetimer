@@ -5,7 +5,15 @@ from datetime import datetime, timedelta, timezone
 from math import floor
 from typing import Tuple
 
-from .constants import REFERENCES, SECOND_DURATION, MINUTE_DURATION, QUARTER_DURATION, HOUR_DURATION, DAY_DURATION, WEEK_DURATION
+from .constants import (
+    REFERENCES,
+    SECOND_DURATION,
+    MINUTE_DURATION,
+    QUARTER_DURATION,
+    HOUR_DURATION,
+    DAY_DURATION,
+    WEEK_DURATION,
+)
 
 # Configure logging (if you wish to keep logging, in addition to warnings)
 logger = logging.getLogger(__name__)
@@ -19,6 +27,7 @@ TIME_BLOCKS = {
     "day": DAY_DURATION,
     "week": WEEK_DURATION,
 }
+
 
 class ClimateTimer:
     """

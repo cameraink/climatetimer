@@ -49,14 +49,14 @@ pip install climatetimer
 
 ### From Source
 Clone the repository and install:
-```
+```bash
 git clone https://github.com/cameraink/climatetimer.git
 cd climatetimer
 pip install .
 ```
 
 # Quick Start
-```
+```python
 from climatetimer import ClimateTimer
 from datetime import datetime, timezone
 
@@ -78,7 +78,7 @@ print("Reference Info:", timer.info())
 # Usage
 ## Initializing ClimateTimer
 You must specify the reference as a positional argument:
-```
+```python
 # For Paris Agreement
 timer_paris = ClimateTimer("paris")
 
@@ -89,12 +89,12 @@ timer_kyoto = ClimateTimer("kyoto")
 
 ## Computing a Block ID
 Pass a timezone-aware datetime and specify the block type:
-```
+```python
 block_id = timer_paris.blockid(datetime(2023, 5, 10, 15, 30, tzinfo=timezone.utc), blocktype="hour")
 ```
 
 ## Retrieving a Time Block Period
-```
+```python
 info = timer_paris.info()
 print("Reference Info:", info)
 ```

@@ -14,9 +14,8 @@ def timer_kyoto():
     return ClimateTimer("kyoto")
 
 
-@pytest.mark.parametrize("reference", ["paris", "kyoto"])
-def test_initialization(reference):
-    timer = ClimateTimer(reference)
+def test_initialization():
+    timer = ClimateTimer("paris")
     assert timer.reference is not None
 
 
@@ -27,7 +26,7 @@ def test_invalid_reference(invalid_reference):
 
 
 @pytest.mark.parametrize(
-    "dt, block_type",
+    "dt, blocktype",
     [
         (datetime(2023, 5, 10, 15, 30, tzinfo=timezone.utc), "second"),
         (datetime(2023, 5, 10, 15, 30, tzinfo=timezone.utc), "minute"),
@@ -37,24 +36,21 @@ def test_invalid_reference(invalid_reference):
         (datetime(2023, 5, 10, 15, 30, tzinfo=timezone.utc), "week"),
     ],
 )
-def test_blockid_valid(timer_paris, dt, block_type):
-    block_id = timer_paris.blockid(dt, block_type=block_type)
+def test_blockid_valid(timer_paris, dt, blocktype):
+    block_id = timer_paris.blockid(dt, blocktype=blocktype)
     assert isinstance(block_id, int)
-
-    # Since the reference is 2016-04-22 for Paris,
-    # a 2023 date should yield a positive block id.
     assert block_id > 0
 
 
-@pytest.mark.parametrize("invalid_block_type", ["year", "decade", "invalid"])
-def test_blockid_invalid_block_type(timer_paris, invalid_block_type):
+@pytest.mark.parametrize("invalid_blocktype", ["year", "decade", "invalid"])
+def test_blockid_invalid_blocktype(timer_paris, invalid_blocktype):
     dt = datetime.utcnow().replace(tzinfo=timezone.utc)
     with pytest.raises(ValueError):
-        timer_paris.blockid(dt, block_type=invalid_block_type)
+        timer_paris.blockid(dt, blocktype=invalid_blocktype)
 
 
 @pytest.mark.parametrize(
-    "block_id, block_type",
+    "block_id, blocktype",
     [
         (1, "second"),
         (1000, "minute"),
@@ -64,8 +60,8 @@ def test_blockid_invalid_block_type(timer_paris, invalid_block_type):
         (500, "week"),
     ],
 )
-def test_period_valid(timer_paris, block_id, block_type):
-    start, end = timer_paris.period(block_id, block_type=block_type)
+def test_period_valid(timer_paris, block_id, blocktype):
+    start, end = timer_paris.period(block_id, blocktype=blocktype)
     assert isinstance(start, datetime)
     assert isinstance(end, datetime)
     assert start < end
@@ -74,54 +70,64 @@ def test_period_valid(timer_paris, block_id, block_type):
 @pytest.mark.parametrize("invalid_block_id", [-1, 0, "string", None])
 def test_period_invalid_block_id(timer_paris, invalid_block_id):
     with pytest.raises(ValueError):
-        timer_paris.period(invalid_block_id, block_type="hour")
+        timer_paris.period(invalid_block_id, blocktype="hour")
 
 
-@pytest.mark.parametrize("invalid_block_type", ["year", "invalid", "millennium"])
-def test_period_invalid_block_type(timer_paris, invalid_block_type):
+@pytest.mark.parametrize("invalid_blocktype", ["year", "invalid", "millennium"])
+def test_period_invalid_blocktype(timer_paris, invalid_blocktype):
     with pytest.raises(ValueError):
-        timer_paris.period(1000, block_type=invalid_block_type)
+        timer_paris.period(1000, blocktype=invalid_blocktype)
 
 
 def test_blockid_negative_paris(timer_paris):
-    # Use a date before the Paris Agreement reference (2016-04-22)
+    # Date before Paris Agreement (2016-04-22)
     dt = datetime(2015, 4, 22, 0, 0, tzinfo=timezone.utc)
-    assert timer_paris.blockid(dt, block_type="day") < 0
+    assert timer_paris.blockid(dt, blocktype="day") < 0
 
 
 def test_blockid_negative_kyoto(timer_kyoto):
-    # Use a date before the Kyoto Protocol reference (2005-02-16)
+    # Date before Kyoto Protocol (2005-02-16)
     dt = datetime(2004, 2, 15, 0, 0, tzinfo=timezone.utc)
-    assert timer_kyoto.blockid(dt, block_type="day") < 0
+    assert timer_kyoto.blockid(dt, blocktype="day") < 0
 
 
 def test_blockid_naive_datetime(timer_paris):
-    dt = datetime(2023, 5, 10, 15, 30)  # naive datetime, no tzinfo
+    dt = datetime(2023, 5, 10, 15, 30)  # naive datetime
     with pytest.warns(UserWarning):
-        block_id = timer_paris.blockid(dt, block_type="hour")
+        block_id = timer_paris.blockid(dt, blocktype="hour")
     assert isinstance(block_id, int)
 
 
 @pytest.mark.parametrize(
     "dt",
     [
-        "2023-05-10T15:30:00",  # string instead of datetime
-        1683816600,  # int (unix timestamp)
-        None,  # NoneType
+        "2023-05-10T15:30:00",
+        1683816600,
+        None,
     ],
 )
 def test_blockid_invalid_datetime(timer_paris, dt):
     with pytest.raises(TypeError):
-        timer_paris.blockid(dt, block_type="hour")
+        timer_paris.blockid(dt, blocktype="hour")
 
 
 @pytest.mark.parametrize(
     "block_id",
     [
-        "1000",  # string instead of int
-        None,  # NoneType
+        "1000",
+        None,
     ],
 )
 def test_period_invalid_block_id_type(timer_paris, block_id):
     with pytest.raises(ValueError):
-        timer_paris.period(block_id, block_type="hour")
+        timer_paris.period(block_id, blocktype="hour")
+
+
+def test_info_method(timer_paris, timer_kyoto):
+    info_paris = timer_paris.info()
+    assert isinstance(info_paris, str)
+    assert "Paris Agreement" in info_paris
+
+    info_kyoto = timer_kyoto.info()
+    assert isinstance(info_kyoto, str)
+    assert "Kyoto Protocol" in info_kyoto

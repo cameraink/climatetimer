@@ -8,7 +8,8 @@ authors = [{ name = "Guillaume Dion"}]
 license = "MIT"
 
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+]
 
 classifiers = [
   # How mature is this project? Common values are

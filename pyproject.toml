@@ -1,6 +1,6 @@
 [project]
 name = "climatetimer"
-version = "0.2.0"
+version = "0.2.1"
 description = "Compute time block IDs since major climate agreements."
 keywords = ["Climate", "Timer", "Paris Agreement", "Kyoto Agreement", "Time Blocks"]
 readme = "README.md"

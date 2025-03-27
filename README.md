@@ -124,7 +124,7 @@ block_ids = timer.blockids(start_date, end_date, blocktype="quarter")
 print("Block IDs:", block_ids)
 ```
 
-Note that `blockids` raise an error if the condition start_date > end_date is not satisfied.
+Note that `blockids()` raise an error if the condition start_date > end_date is not satisfied.
 
 ## Retrieving the boundaries of a BlockId for a given date
 This example shows how to easily get the start and end dates of a time block

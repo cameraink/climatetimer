@@ -123,6 +123,36 @@ class ClimateTimer:
         delta = date - self.reference
         return floor(delta.total_seconds() / TIME_BLOCKS[blocktype]) + 1
 
+
+    def blockids(self, start_date: datetime, end_date: datetime, blocktype: str = "quarter") -> list:
+        """
+        Compute the list of time block IDs for the given start and end datetimes and block type.
+
+        Args:
+            start_date (datetime): The start datetime of the range.
+            end_date (datetime): The end datetime of the range.
+            blocktype (str, optional): The type of time block ("second", "minute", "quarter", "hour", "day", "week").
+                                       Defaults to "quarter".
+
+        Returns:
+            list: A list of block IDs covering the date range.
+        """
+        # Validate the block type and the datetimes
+        self._validate_blocktype(blocktype)
+        start_date = self._validate_datetime(start_date)
+        end_date = self._validate_datetime(end_date)
+
+        # Ensure the start date is not after the end date
+        if start_date > end_date:
+            raise ValueError("start_date must not be after end_date")
+
+        # Compute the block IDs for the start and end dates
+        start_block = self.blockid(start_date, blocktype)
+        end_block = self.blockid(end_date, blocktype)
+
+        # Return the list of block IDs from start to end (inclusive)
+        return list(range(start_block, end_block + 1))
+
     def period(self, block_id: int, blocktype: str = "quarter") -> Tuple[datetime, datetime]:
         """
         Get the start and end datetimes for the given block ID and block type.

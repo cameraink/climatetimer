@@ -1,6 +1,5 @@
-# tests/test_climatetimer.py
 import pytest
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from climatetimer.climatetimer import ClimateTimer
 
 
@@ -131,3 +130,72 @@ def test_info_method(timer_paris, timer_kyoto):
     info_kyoto = timer_kyoto.info()
     assert isinstance(info_kyoto, str)
     assert "Kyoto Protocol" in info_kyoto
+
+
+# --- New tests for blockids() method --- #
+
+def test_blockids_valid(timer_paris):
+    # test a valid range of dates
+    start_date = datetime(2025, 3, 1, tzinfo=timezone.utc)
+    end_date = datetime(2025, 3, 5, tzinfo=timezone.utc)
+
+    blockids_list = timer_paris.blockids(start_date, end_date, blocktype="day")
+    expected_length = 5 # don't use list(range) as it's the function used in the implementation the method we test
+    assert isinstance(blockids_list, list)
+    assert len(blockids_list) == expected_length
+
+
+def test_blockids_invalid_date_range(timer_paris):
+    # Provide a start date later than the end date.
+    start_date = datetime(2025, 3, 5, tzinfo=timezone.utc)
+    end_date = datetime(2025, 3, 1, tzinfo=timezone.utc)
+    with pytest.raises(ValueError):
+        timer_paris.blockids(start_date, end_date, blocktype="day")
+
+
+def test_blockids_naive_datetime(timer_paris):
+    # A naive start_date should trigger a warning.
+    start_date = datetime(2025, 3, 1)  # naive datetime
+    end_date = datetime(2025, 3, 5, tzinfo=timezone.utc)
+    with pytest.warns(UserWarning):
+        blockids_list = timer_paris.blockids(start_date, end_date, blocktype="day")
+    assert isinstance(blockids_list, list)
+
+
+@pytest.mark.parametrize("start_date, end_date", [
+    ("2025-03-01", datetime(2025, 3, 5, tzinfo=timezone.utc)),
+    (datetime(2025, 3, 1, tzinfo=timezone.utc), "2025-03-05")
+])
+def test_blockids_invalid_datetime(timer_paris, start_date, end_date):
+    with pytest.raises(TypeError):
+        timer_paris.blockids(start_date, end_date, blocktype="day")
+
+
+def test_blockids_invalid_blocktype(timer_paris):
+    start_date = datetime(2025, 3, 1, tzinfo=timezone.utc)
+    end_date = datetime(2025, 3, 5, tzinfo=timezone.utc)
+    with pytest.raises(ValueError):
+        timer_paris.blockids(start_date, end_date, blocktype="year")
+
+
+def test_blockids_single_block_if_range_short(timer_paris):
+    # For blocktype "second", choose two datetimes that fall within the same time block.
+    start_date = timer_paris.reference + timedelta(seconds=10)
+    end_date = timer_paris.reference + timedelta(seconds=10, microseconds=500000)
+    blockids_list = timer_paris.blockids(start_date, end_date, blocktype="second")
+    # Expected to have exactly one unique block id.
+    assert len(blockids_list) == 1
+
+
+def test_blockids_overlap_reference_includes_zero(timer_paris):
+    # Using blocktype "second" for clear boundaries.
+    # Choose a range that spans the reference point.
+    start_date = timer_paris.reference - timedelta(seconds=1)
+    end_date = timer_paris.reference + timedelta(seconds=1)
+    blockids_list = timer_paris.blockids(start_date, end_date, blocktype="second")
+    # Assert that the block corresponding to just before the reference (block id 0) is present.
+    assert 0 in blockids_list
+    # For blocktype "second", start_date yields block id 0 and end_date yields block id 2,
+    # so the list should contain exactly 3 block ids: [0, 1, 2].
+    expected_length = 3
+    assert len(blockids_list) == expected_length

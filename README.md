@@ -12,6 +12,11 @@ It supports two reference points:
 
 This package is designed for Python 3, is OS independent, and is licensed under the MIT License.
 
+## Release notes
+
+v0.3
+- new method `blockids` (with 's') that returns a list of blockId's between two dates.
+
 ## Features
 
 ### Flexible Time Reference Selection
@@ -98,3 +103,25 @@ block_id = timer_paris.blockid(datetime(2023, 5, 10, 15, 30, tzinfo=timezone.utc
 info = timer_paris.info()
 print("Reference Info:", info)
 ```
+
+## Computing a list of Block IDs
+Pass a timezone-aware start time and end time and specify the block type:
+```python
+from datetime import datetime, timezone
+from climatetimer import ClimateTimer
+
+# Create an instance of ClimateTimer using the "paris" reference
+timer = ClimateTimer("paris")
+
+# Define the start and end datetimes (make sure they're timezone-aware)
+start_date = datetime(2025, 3, 1, tzinfo=timezone.utc)
+end_date = datetime(2025, 3, 27, tzinfo=timezone.utc)
+
+# Compute the list of block IDs for the specified date range and block type
+block_ids = timer.blockids(start_date, end_date, blocktype="quarter")
+
+# Output the list of block IDs
+print("Block IDs:", block_ids)
+```
+
+Note that `blockids` raise an error if the condition start_date > end_date is not satisfied.

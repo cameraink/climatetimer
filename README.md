@@ -125,3 +125,25 @@ print("Block IDs:", block_ids)
 ```
 
 Note that `blockids` raise an error if the condition start_date > end_date is not satisfied.
+
+## Retrieving the boundaries of a BlockId for a given date
+This example shows how to easily get the start and end dates of a time block
+corresponding to a given date 
+
+```python
+from datetime import datetime, timezone
+from climatetimer.climatetimer import ClimateTimer
+
+# Create an instance of ClimateTimer using the "paris" reference
+timer = ClimateTimer("paris")
+
+# Define the specific date (timezone-aware)
+specific_date = datetime(2025, 3, 10, 15, 30, tzinfo=timezone.utc)
+
+# Nested call: first compute the block ID for the specific date, then get its period.
+start_date, end_date = timer.period(timer.blockid(specific_date, blocktype="hour"), blocktype="hour")
+
+print("For specific date:", specific_date)
+print("Block period starts at:", start_date)
+print("Block period ends at:", end_date)
+```

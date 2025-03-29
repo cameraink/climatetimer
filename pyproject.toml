@@ -1,6 +1,6 @@
 [project]
 name = "climatetimer"
-version = "0.3"
+version = "0.3.1"
 description = "Compute time block IDs since major climate agreements."
 keywords = ["Climate", "Timer", "Paris Agreement", "Kyoto Agreement", "Time Blocks"]
 readme = "README.md"
@@ -42,7 +42,7 @@ Repository = "https://github.com/cameraink/climatetimer"
 [tool.ruff]
 line-length = 108
 target-version = "py310"
-select = ["E", "F", "W", "C90"]
+lint.select = ["E", "F", "W", "C90"]
 
 
 [build-system]

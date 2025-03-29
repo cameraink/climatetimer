@@ -18,6 +18,11 @@ def test_initialization():
     assert timer.reference is not None
 
 
+def test_initialization_uppercase():
+    timer = ClimateTimer("Paris")
+    assert timer.reference is not None
+
+
 @pytest.mark.parametrize("invalid_reference", ["invalid", "earth", "2020"])
 def test_invalid_reference(invalid_reference):
     with pytest.raises(ValueError):
@@ -30,6 +35,7 @@ def test_invalid_reference(invalid_reference):
         (datetime(2023, 5, 10, 15, 30, tzinfo=timezone.utc), "second"),
         (datetime(2023, 5, 10, 15, 30, tzinfo=timezone.utc), "minute"),
         (datetime(2023, 5, 10, 15, 30, tzinfo=timezone.utc), "quarter"),
+        (datetime(2023, 5, 10, 15, 30, tzinfo=timezone.utc), "15m"),
         (datetime(2023, 5, 10, 15, 30, tzinfo=timezone.utc), "hour"),
         (datetime(2023, 5, 10, 15, 30, tzinfo=timezone.utc), "day"),
         (datetime(2023, 5, 10, 15, 30, tzinfo=timezone.utc), "week"),
@@ -54,6 +60,7 @@ def test_blockid_invalid_blocktype(timer_paris, invalid_blocktype):
         (1, "second"),
         (1000, "minute"),
         (50000, "quarter"),
+        (50000, "15m"),
         (100000, "hour"),
         (3000, "day"),
         (500, "week"),
@@ -134,13 +141,16 @@ def test_info_method(timer_paris, timer_kyoto):
 
 # --- New tests for blockids() method --- #
 
+
 def test_blockids_valid(timer_paris):
     # test a valid range of dates
     start_date = datetime(2025, 3, 1, tzinfo=timezone.utc)
     end_date = datetime(2025, 3, 5, tzinfo=timezone.utc)
 
     blockids_list = timer_paris.blockids(start_date, end_date, blocktype="day")
-    expected_length = 5 # don't use list(range) as it's the function used in the implementation the method we test
+    expected_length = (
+        5  # don't use list(range) as it's the function used in the implementation the method we test
+    )
     assert isinstance(blockids_list, list)
     assert len(blockids_list) == expected_length
 
@@ -162,10 +172,13 @@ def test_blockids_naive_datetime(timer_paris):
     assert isinstance(blockids_list, list)
 
 
-@pytest.mark.parametrize("start_date, end_date", [
-    ("2025-03-01", datetime(2025, 3, 5, tzinfo=timezone.utc)),
-    (datetime(2025, 3, 1, tzinfo=timezone.utc), "2025-03-05")
-])
+@pytest.mark.parametrize(
+    "start_date, end_date",
+    [
+        ("2025-03-01", datetime(2025, 3, 5, tzinfo=timezone.utc)),
+        (datetime(2025, 3, 1, tzinfo=timezone.utc), "2025-03-05"),
+    ],
+)
 def test_blockids_invalid_datetime(timer_paris, start_date, end_date):
     with pytest.raises(TypeError):
         timer_paris.blockids(start_date, end_date, blocktype="day")

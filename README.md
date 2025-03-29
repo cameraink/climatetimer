@@ -14,8 +14,12 @@ This package is designed for Python 3, is OS independent, and is licensed under 
 
 ## Release notes
 
+v0.3.1
+- Supports upper and lower case for block types.
+- Supports `15m` block type (equivalent to `quarter`)
+
 v0.3
-- new method `blockids` (with 's') that returns a list of blockId's between two dates.
+- new method `blockids` (with an 's') which returns a list of blockIds between two dates.
 
 ## Features
 

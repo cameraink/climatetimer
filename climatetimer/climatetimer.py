@@ -20,6 +20,7 @@ TIME_BLOCKS = {
     "second": SECOND_DURATION,
     "minute": MINUTE_DURATION,
     "quarter": QUARTER_DURATION,
+    "15m": QUARTER_DURATION,
     "hour": HOUR_DURATION,
     "day": DAY_DURATION,
     "week": WEEK_DURATION,
@@ -51,8 +52,10 @@ class ClimateTimer:
         Raises:
             ValueError: If an invalid reference is provided.
         """
+        reference = reference.lower()
         if reference not in REFERENCES:
             raise ValueError(f"Invalid reference '{reference}'. Choose from {list(REFERENCES.keys())}.")
+
         self.reference = REFERENCES[reference]
         self.refkey = reference  # Save the key for info() lookup
 
@@ -118,11 +121,11 @@ class ClimateTimer:
         Returns:
             int: The computed block ID.
         """
-        self._validate_blocktype(blocktype)
+        blocktype = blocktype.lower()
+        self._validate_blocktype(blocktype.lower())
         date = self._validate_datetime(date)
         delta = date - self.reference
         return floor(delta.total_seconds() / TIME_BLOCKS[blocktype]) + 1
-
 
     def blockids(self, start_date: datetime, end_date: datetime, blocktype: str = "quarter") -> list:
         """

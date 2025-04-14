@@ -59,7 +59,8 @@ class ClimateTimer:
         self.reference = REFERENCES[reference]
         self.refkey = reference  # Save the key for info() lookup
 
-    def _validate_datetime(self, dt: datetime) -> datetime:
+    @staticmethod
+    def _validate_datetime(dt: datetime) -> datetime:
         """
         Ensure dt is a timezone-aware datetime.
 
@@ -79,7 +80,8 @@ class ClimateTimer:
             return dt.replace(tzinfo=timezone.utc)
         return dt
 
-    def _validate_blocktype(self, blocktype: str):
+    @staticmethod
+    def _validate_blocktype(blocktype: str):
         """
         Validate that blocktype is supported.
 
@@ -92,7 +94,8 @@ class ClimateTimer:
         if blocktype not in TIME_BLOCKS:
             raise ValueError(f"Invalid blocktype '{blocktype}'. Choose from {list(TIME_BLOCKS.keys())}.")
 
-    def _validate_block_id(self, block_id: int) -> int:
+    @staticmethod
+    def _validate_block_id(block_id: int) -> int:
         """
         Validate that block_id is a positive integer.
 

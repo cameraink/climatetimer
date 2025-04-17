@@ -32,7 +32,8 @@ classifiers = [
 [dependency-groups]
 dev = [
     "ipykernel>=6.29.5",
-    "ruff>=0.9.6",
+    "pytest>=8.3.5",
+    "ruff>=0.11.5",
 ]
 
 [project.urls]

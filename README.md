@@ -67,21 +67,47 @@ pip install .
 # Quick Start
 ```python
 from climatetimer import ClimateTimer
-from datetime import datetime, timezone
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
-# Initialize using the Paris Agreement reference
+# Initialize a timer using the Paris Agreement reference
 timer = ClimateTimer("paris")
 
+# Set the date and time of an event
+# ex. the opening of the Paris Olympic Games 2024
+# i.e. Friday 26 Jul 2024, 07:30PM Europe/Paris
+paris_timezone = ZoneInfo('Europe/Paris')
+paris_games = datetime(2024, 7, 26, 19, 30, 0, tzinfo=paris_timezone)
+
+print(f"Paris Olympic Games 2024 opened at {paris_games.strftime('%a %d %b %Y, %I:%M%p')} {paris_games.tzname()}\n")
+
 # Compute the block ID for the current hour (date is positional; blocktype defaults to "quarter")
-block_id = timer.blockid(datetime.utcnow(), blocktype="hour")
-print(f"Current hour block ID: {block_id}")
+block_id = timer.blockid(paris_games, blocktype="hour")
+print(f"The ‘hour block ID‘ of Paris Olympic Games 2024 opening is {block_id}\n")
 
 # Retrieve the start and end times for that block
 start, end = timer.period(block_id, blocktype="hour")
-print(f"Block {block_id} starts at {start} and ends at {end}")
+print(f"The Block {block_id}")
+print(f"• starts at {start.strftime('%a %d %b %Y, %I:%M%p')} {start.tzname()}")
+print(f"• ends at {end.strftime('%a %d %b %Y, %I:%M%p')}  {start.tzname()}\n")
 
 # Get information about the reference event for this instance
-print("Reference Info:", timer.info())
+print("Reference Info:\n • ", timer.info())
+```
+
+Output:
+```zsh
+Paris Olympic Games 2024 opened at Fri 26 Jul 2024, 07:30PM CEST
+
+The ‘hour block ID‘ of Paris Olympic Games 2024 opening is 72426
+
+The Block 72426
+• starts at Fri 26 Jul 2024, 05:00PM UTC
+• ends at Fri 26 Jul 2024, 06:00PM  UTC
+
+Reference Info:
+ •  Paris Agreement (April 22, 2016): Global commitment to limit warming
+ to well below 2°C above pre-industrial levels with 190+ countries participating.
 ```
 
 # Usage

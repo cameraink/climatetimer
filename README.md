@@ -119,7 +119,6 @@ timer_paris = ClimateTimer("paris")
 
 # For Kyoto Protocol
 timer_kyoto = ClimateTimer("kyoto")
-
 ```
 
 ## Computing a Block ID

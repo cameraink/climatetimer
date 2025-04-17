@@ -75,9 +75,11 @@ class ClimateTimer:
         """
         if not isinstance(dt, datetime):
             raise TypeError(f"Expected a datetime object, got {type(dt).__name__}.")
+
         if dt.tzinfo is None:
             warnings.warn("Naive datetime provided; assuming UTC.", UserWarning)
             return dt.replace(tzinfo=timezone.utc)
+
         return dt
 
     @staticmethod
@@ -110,6 +112,7 @@ class ClimateTimer:
         """
         if not isinstance(block_id, int) or block_id < 1:
             raise ValueError(f"Invalid block_id {block_id}. Must be a positive integer.")
+
         return block_id
 
     def blockid(self, date: datetime, blocktype: str = "quarter") -> int:
@@ -125,9 +128,13 @@ class ClimateTimer:
             int: The computed block ID.
         """
         blocktype = blocktype.lower()
-        self._validate_blocktype(blocktype.lower())
+        self._validate_blocktype(blocktype)
         date = self._validate_datetime(date)
-        delta = date - self.reference
+
+        # Convert date to UTC before calculating the difference
+        date_utc = date.astimezone(timezone.utc)
+        delta = date_utc - self.reference
+
         return floor(delta.total_seconds() / TIME_BLOCKS[blocktype]) + 1
 
     def blockids(self, start_date: datetime, end_date: datetime, blocktype: str = "quarter") -> list:

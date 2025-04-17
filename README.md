@@ -127,7 +127,6 @@ Pass a timezone-aware datetime and specify the block type:
 block_id = timer_paris.blockid(datetime(2023, 5, 10, 15, 30, tzinfo=timezone.utc), blocktype="hour")
 ```
 
-
 ## Retrieving a Time Block Period
 ```python
 info = timer_paris.info()

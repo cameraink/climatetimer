@@ -33,10 +33,17 @@ jobs:
       
     - name: Install Venv
       run: uv venv
+
     - name: Install Dependencies
       run: uv pip install -e ".[dev]"
-      
+
+    - name: "Python format"
+      run: uvx ruff format .
+
+    - name: "Python lint"
+      run: uvx ruff check .
+
     - name: Test
-      run: uv run pytest
+      run: uv run pytest --cov=climatetimer
 
 

@@ -32,6 +32,9 @@ classifiers = [
 [dependency-groups]
 dev = [
     "ipykernel>=6.29.5",
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.6.12",
+    "mkdocstrings-python>=1.16.10",
     "mutmut>=3.2.3",
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
@@ -47,7 +50,10 @@ line-length = 120
 target-version = "py310"
 lint.select = ["E", "F", "W", "C90"]
 
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.mutmut]
+paths_to_mutate = "climatetimer/"
+tests_dir = "tests/"

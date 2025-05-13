@@ -14,6 +14,9 @@ This package is designed for Python 3, is OS independent, and is licensed under 
 
 ## Release notes
 
+v0.3.2
+- Improve unit testing and code formatting
+
 v0.3.1
 - Supports upper and lower case for block types.
 - Supports `15m` block type (equivalent to `quarter`)

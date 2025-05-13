@@ -133,7 +133,7 @@ info = timer_paris.info()
 print("Reference Info:", info)
 ```
 
-## Computing a list of Block IDs
+## Computing a list of Block IDs for a period
 Pass a timezone-aware start time and end time and specify the block type:
 ```python
 from datetime import datetime, timezone
@@ -153,7 +153,42 @@ block_ids = timer.blockids(start_date, end_date, blocktype="quarter")
 print("Block IDs:", block_ids)
 ```
 
-Note that `blockids()` method raises an error if the condition start_date > end_date is not satisfied.
+Note: `blockids()` method raises an error if the condition start_date > end_date is not satisfied.
+
+## Computing a list of Block IDs for a single day
+`blockids` methods return the list of time blocks, **including** the limits of the period passed as argument.
+```python
+from datetime import datetime, timezone, timedelta
+from climatetimer import ClimateTimer
+
+timer = ClimateTimer("paris")
+start_date = datetime(2025, 5, 11, tzinfo=timezone.utc)
+
+# Calculate end_date to have only 1 day, ie. exclude the end limit by 1 second.
+end_date = start_date + timedelta(days=1) - timedelta(seconds=1)
+
+blocks_ids = timer.blockids(start_date, end_date, blocktype ="quarter")
+
+print(f"number of TB: {len(blocks_ids)}")
+print(f"\nList of TB: {(blocks_ids)}")
+```
+This correctly returns 96 time blocks:
+```bash
+number of TB: 96
+
+List of TB: [317377, 317378, 317379, 317380, 317381, 317382, 317383, 317384, 317385, 317386, 317387, 317388, 317389, 317390, 317391, 317392, 317393, 317394, 317395, 317396, 317397, 317398, 317399, 317400, 317401, 317402, 317403, 317404, 317405, 317406, 317407, 317408, 317409, 317410, 317411, 317412, 317413, 317414, 317415, 317416, 317417, 317418, 317419, 317420, 317421, 317422, 317423, 317424, 317425, 317426, 317427, 317428, 317429, 317430, 317431, 317432, 317433, 317434, 317435, 317436, 317437, 317438, 317439, 317440, 317441, 317442, 317443, 317444, 317445, 317446, 317447, 317448, 317449, 317450, 317451, 317452, 317453, 317454, 317455, 317456, 317457, 317458, 317459, 317460, 317461, 317462, 317463, 317464, 317465, 317466, 317467, 317468, 317469, 317470, 317471, 317472]
+```
+whereas 
+```python
+start_date = datetime(2025, 5, 11, tzinfo=timezone.utc)
+end_date = datetime(2025, 5, 12, tzinfo=timezone.utc)
+```
+would return 97 time blocks:
+```bash
+number of TB: 97
+
+List of TB: [317377, 317378, 317379, 317380, 317381, 317382, 317383, 317384, 317385, 317386, 317387, 317388, 317389, 317390, 317391, 317392, 317393, 317394, 317395, 317396, 317397, 317398, 317399, 317400, 317401, 317402, 317403, 317404, 317405, 317406, 317407, 317408, 317409, 317410, 317411, 317412, 317413, 317414, 317415, 317416, 317417, 317418, 317419, 317420, 317421, 317422, 317423, 317424, 317425, 317426, 317427, 317428, 317429, 317430, 317431, 317432, 317433, 317434, 317435, 317436, 317437, 317438, 317439, 317440, 317441, 317442, 317443, 317444, 317445, 317446, 317447, 317448, 317449, 317450, 317451, 317452, 317453, 317454, 317455, 317456, 317457, 317458, 317459, 317460, 317461, 317462, 317463, 317464, 317465, 317466, 317467, 317468, 317469, 317470, 317471, 317472, 317473]
+```
 
 ## Retrieving the boundaries of a BlockId for a given date
 This example shows how to easily get the start and end dates of a time block
